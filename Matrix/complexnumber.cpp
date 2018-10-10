@@ -82,6 +82,7 @@ ComplexNumber ComplexNumber::subtraction(const ComplexNumber &left, const Comple
 ComplexNumber ComplexNumber::divide(const ComplexNumber &left, const ComplexNumber &right)
 {
     // TODO: add divide
+
 }
 
 ComplexNumber ComplexNumber::operator*(const ComplexNumber &right) const
