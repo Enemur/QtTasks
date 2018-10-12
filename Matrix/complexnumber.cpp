@@ -33,12 +33,12 @@ ComplexNumber &ComplexNumber::operator=(const ComplexNumber &number)
     return *this;
 }
 
-bool ComplexNumber::operator==(const ComplexNumber &number)
+bool ComplexNumber::operator==(const ComplexNumber &number) const
 {
     return equal(number);
 }
 
-bool ComplexNumber::operator!=(const ComplexNumber &number)
+bool ComplexNumber::operator!=(const ComplexNumber &number) const
 {
     return !equal(number);
 }
@@ -47,8 +47,10 @@ ComplexNumber ComplexNumber::multiply(const ComplexNumber &left, const ComplexNu
 {
     auto result = ComplexNumber();
 
-    result._realPart = left._realPart * right._realPart - left._imaginaryPart * right._imaginaryPart;
-    result._imaginaryPart = left._realPart * right._imaginaryPart + right._realPart * left._imaginaryPart;
+    result._realPart = left._realPart * right._realPart -
+            left._imaginaryPart * right._imaginaryPart;
+    result._imaginaryPart = left._realPart * right._imaginaryPart +
+            right._realPart * left._imaginaryPart;
 
     return result;
 }
@@ -81,8 +83,21 @@ ComplexNumber ComplexNumber::subtraction(const ComplexNumber &left, const Comple
 
 ComplexNumber ComplexNumber::divide(const ComplexNumber &left, const ComplexNumber &right)
 {
-    // TODO: add divide
+    auto result = ComplexNumber();
 
+    if (right == ComplexNumber::ZERO)
+        throw new CNDivideByZeroException();
+
+    result._realPart = (left._realPart * right._realPart +
+            left._imaginaryPart * right._imaginaryPart) /
+            (right._realPart * right._realPart +
+             right._imaginaryPart * right._imaginaryPart);
+    result._imaginaryPart = (right._realPart * left._imaginaryPart -
+                             left._realPart * right._imaginaryPart) /
+            (right._realPart * left._realPart +
+             right._imaginaryPart * right._imaginaryPart);
+
+    return result;
 }
 
 ComplexNumber ComplexNumber::operator*(const ComplexNumber &right) const
@@ -139,7 +154,7 @@ ComplexNumber &ComplexNumber::operator/=(const ComplexNumber &right)
     return *this;
 }
 
-bool ComplexNumber::equal(const ComplexNumber &number)
+bool ComplexNumber::equal(const ComplexNumber &number) const
 {
     auto realPartIsEqual = fabs(_realPart - number._realPart) == 0.0;
     auto imgPartIsEqual = fabs(_imaginaryPart - number._imaginaryPart) == 0.0;
@@ -147,7 +162,7 @@ bool ComplexNumber::equal(const ComplexNumber &number)
     return realPartIsEqual && imgPartIsEqual;
 }
 
-std::string ComplexNumber::toString()
+std::string ComplexNumber::toString() const
 {
     auto result = std::stringstream();
 

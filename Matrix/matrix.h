@@ -7,6 +7,7 @@
 #include <QVector>
 #include <string>
 #include <sstream>
+#include "matrixexception.h"
 
 /* Определить конструктор,
 принимающий количество строк матрицы, количество столбцов матрицы и ссылку на
@@ -25,7 +26,7 @@
 нахождения эрмитовосопряжённой матрицы,
 возведения матрицы в целую неотрицательную степень, +
 нахождения собственных чисел и собственных векторов матрицы.
-Реализовать метод на уровне типа для создания случайной матрицы. */
+Реализовать метод на уровне типа для создания случайной матрицы. +*/
 
 using std::vector;
 using MatrixArr = vector<vector<ComplexNumber>>;
@@ -68,20 +69,28 @@ public:
     Matrix& operator-=(const Matrix& right);
     Matrix &operator/=(const Matrix& right);
 
-    Matrix reverse();
-    ComplexNumber determinant();
-    Matrix transposed();
-    ComplexNumber trace();
-    Matrix conjugate();
-    Matrix pow(unsigned int power);
+    Matrix inverce() const;
+    ComplexNumber determinant() const;
+    Matrix transposed() const;
+    ComplexNumber trace() const;
+    Matrix conjugate() const;
+    Matrix pow(unsigned int power) const;
+    std::vector<ComplexNumber> eigenvaluesEigenvectors() const;
 
     static Matrix generate();
     
-    bool equal(const Matrix &matrix);
-    std::string toString();
+    bool equal(const Matrix &matrix) const;
+    std::string toString() const;
+
+    template <typename Stream>
+    friend Stream& operator<<(Stream& stream, const Matrix& matrix) {
+        stream << matrix.toString();
+        return stream;
+    }
 
     ~Matrix();
 private:
+    void reverse();
     void makeTriangle(Matrix* neg = nullptr);
     void swapLines(size_t first, size_t second);
     void swapColums(size_t first, size_t second);

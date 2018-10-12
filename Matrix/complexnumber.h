@@ -4,6 +4,7 @@
 #include <qmath.h>
 #include <qstring.h>
 #include <sstream>
+#include "complexnumberexception.h"
 
 class ComplexNumber
 {
@@ -20,8 +21,8 @@ public:
     ComplexNumber(const ComplexNumber &complexNumber);
 
     ComplexNumber& operator= (const ComplexNumber& number);
-    bool operator== (const ComplexNumber& number);
-    bool operator!= (const ComplexNumber& number);
+    bool operator== (const ComplexNumber& number) const;
+    bool operator!= (const ComplexNumber& number) const;
 
     static ComplexNumber multiply(const ComplexNumber &left, const ComplexNumber &right);
     static ComplexNumber addition(const ComplexNumber &left, const ComplexNumber &right);
@@ -40,8 +41,14 @@ public:
     ComplexNumber& operator-=(const ComplexNumber& right);
     ComplexNumber &operator/=(const ComplexNumber& right);
 
-    bool equal(const ComplexNumber &number);
-    std::string toString();
+    bool equal(const ComplexNumber &number) const;
+    std::string toString() const;
+
+    template <typename Stream>
+    friend Stream& operator<<(Stream& stream, const ComplexNumber& number) {
+        stream << number.toString();
+        return stream;
+    }
 
     ~ComplexNumber();
 };

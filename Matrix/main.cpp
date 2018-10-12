@@ -13,11 +13,16 @@ int main(int argc, char *argv[])
 
     printAbout();
 
-    Matrix tmp(4, 4, QVector<double>(2, 3)),
-            tmp2;
+    auto coef = QVector<double>();
+    coef.append(1);
+    coef.append(-2);
+    coef.append(-1);
+    coef.append(4);
 
-    tmp = Matrix::generate();
-    std::cout << tmp.toString() << std::endl;
+    Matrix tmp(2, 2, coef);
+
+    std::cout << tmp.determinant() << std::endl;
+    std::cout << tmp.inverce() * tmp << std::endl;
 
     return a.exec();
 }

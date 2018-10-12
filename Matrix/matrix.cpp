@@ -89,7 +89,7 @@ Matrix Matrix::addition(const Matrix &left, const Matrix &right)
 
 Matrix Matrix::division(const Matrix &left, const Matrix &right)
 {
-    // TODO: Add division
+    // TODO: add division
 }
 
 Matrix Matrix::subtraction(const Matrix &left, const Matrix &right)
@@ -163,11 +163,10 @@ Matrix &Matrix::operator/=(const Matrix &right)
     return *this;
 }
 
-Matrix Matrix::reverse()
+Matrix Matrix::inverce() const
 {
-    // TODO: Add exception
    if (determinant() == ComplexNumber::ZERO)
-       throw std::exception();
+       throw DeterminantIsZeroException();
 
    auto tmp{*this};
 
@@ -190,13 +189,12 @@ Matrix Matrix::reverse()
    return negative;
 }
 
-ComplexNumber Matrix::determinant()
+ComplexNumber Matrix::determinant() const
 {
     Matrix tmp(*this);
 
-    // TODO: add exeption
     if (_rowCount != _colCount)
-        throw new std::exception();
+        throw new NotSquareMatrixException();
 
     try
     {
@@ -216,7 +214,7 @@ ComplexNumber Matrix::determinant()
     return result;
 }
 
-Matrix Matrix::transposed()
+Matrix Matrix::transposed() const
 {
     auto result = Matrix(_colCount, _rowCount);
 
@@ -227,7 +225,7 @@ Matrix Matrix::transposed()
     return result;
 }
 
-ComplexNumber Matrix::trace()
+ComplexNumber Matrix::trace() const
 {
     auto result = ComplexNumber();
 
@@ -237,7 +235,7 @@ ComplexNumber Matrix::trace()
     return result;
 }
 
-Matrix Matrix::conjugate()
+Matrix Matrix::conjugate() const
 {
     auto result = transposed();
     result = unaryMinus(result);
@@ -245,7 +243,7 @@ Matrix Matrix::conjugate()
     return result;
 }
 
-Matrix Matrix::pow(unsigned int power)
+Matrix Matrix::pow(unsigned int power) const
 {
     auto result = Matrix(*this);
 
@@ -255,19 +253,28 @@ Matrix Matrix::pow(unsigned int power)
     return result;
 }
 
+std::vector<ComplexNumber> Matrix::eigenvaluesEigenvectors() const
+{
+    auto result = std::vector<ComplexNumber>();
+
+
+
+    return result;
+}
+
 Matrix Matrix::generate()
 {
-    auto colCount = rand() % 10;
-    auto rowCount = rand() % 10;
+    size_t colCount = rand() % 10;
+    size_t rowCount = rand() % 10;
 
     auto coefficents = QVector<double>();
-    for(int i = 0; i < colCount * rowCount; i++)
+    for(size_t i = 0; i < colCount * rowCount; i++)
         coefficents.append(rand());
 
    return Matrix(colCount, rowCount, coefficents);
 }
 
-bool Matrix::equal(const Matrix &matrix)
+bool Matrix::equal(const Matrix &matrix) const
 {
     auto isEqualColCount = _colCount == matrix._colCount;
     auto isEqualRowCount = _rowCount == matrix._rowCount;
@@ -283,7 +290,7 @@ bool Matrix::equal(const Matrix &matrix)
     return true;
 }
 
-std::string Matrix::toString()
+std::string Matrix::toString() const
 {
     auto result = std::stringstream();
 
@@ -313,12 +320,11 @@ void Matrix::makeTriangle(Matrix* neg)
                     swapLines(line, inner_line);
 
                     if (neg != nullptr)
-                        neg->swapLines(line, inner_line); //TODO
+                        neg->swapLines(line, inner_line);
                 }
 
-        // TODO: add exception
         if (_coefficients[line][line] == ComplexNumber::ZERO)
-            throw std::runtime_error("Determinant = 0");
+            throw DeterminantIsZeroException();
 
         for (size_t inner_line = line + 1; inner_line < _rowCount; inner_line++)
         {
@@ -329,7 +335,7 @@ void Matrix::makeTriangle(Matrix* neg)
                 _coefficients[inner_line][inner_col] -= (coef * _coefficients[line][inner_col]);
 
                 if (neg != nullptr)
-                    neg->_coefficients[inner_line][inner_col] -= (coef * neg->_coefficients[line][inner_col]); //TODO
+                    neg->_coefficients[inner_line][inner_col] -= (coef * neg->_coefficients[line][inner_col]);
             }
         }
     }
@@ -357,4 +363,13 @@ void Matrix::swapColums(size_t first, size_t second)
 Matrix::~Matrix()
 {
     _coefficients.clear();
+}
+
+void Matrix::reverse()
+{
+    for (size_t line = 0; line < (_rowCount / 2); line++)
+        swapLines(line, _rowCount - 1 - line);
+
+    for (size_t column = 0; column < (_colCount / 2); column++)
+        swapColums(column, _colCount - 1 - column);
 }
