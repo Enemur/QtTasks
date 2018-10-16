@@ -1,7 +1,7 @@
 #include "matrixexception.h"
 
 MatrixException::MatrixException(const std::string &message)
-    : _message(message) {}
+    : std::exception(), _message(message) {}
 
 const char* MatrixException::what() const noexcept
 {

@@ -4,7 +4,7 @@
 #include <exception>
 #include <string>
 
-class MatrixException : std::exception
+class MatrixException : public std::exception
 {
 private:
     std::string _message;
@@ -14,19 +14,19 @@ public:
     const char* what() const noexcept;
 };
 
-class DivideByZeroException : MatrixException
+class DivideByZeroException : public MatrixException
 {
 public:
     DivideByZeroException();
 };
 
-class DeterminantIsZeroException : MatrixException
+class DeterminantIsZeroException : public MatrixException
 {
 public:
     DeterminantIsZeroException();
 };
 
-class NotSquareMatrixException : MatrixException
+class NotSquareMatrixException : public MatrixException
 {
 public:
     NotSquareMatrixException();
