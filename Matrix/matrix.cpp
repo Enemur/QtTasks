@@ -49,11 +49,21 @@ Matrix& Matrix::operator=(const Matrix &matrix)
     return *this;
 }
 
+bool Matrix::operator==(const Matrix &matrix) const
+{
+    return equal(matrix);
+}
+
+bool Matrix::operator!=(const Matrix &matrix) const
+{
+    return !equal(matrix);
+}
+
 Matrix Matrix::multiply(const Matrix &left, const Matrix &right)
 {
     auto result = Matrix(left._colCount, left._rowCount);
     if (left._colCount != right._rowCount)
-        throw new std::exception();
+        throw MatrixException("left.colcount != right.colCount");
 
     for (size_t i = 0; i < left._rowCount; i++)
         for (size_t j = 0; j < right._colCount; j++)
@@ -89,7 +99,11 @@ Matrix Matrix::addition(const Matrix &left, const Matrix &right)
 
 Matrix Matrix::division(const Matrix &left, const Matrix &right)
 {
-    // TODO: add division
+    auto zero = Matrix(right._rowCount, right._colCount);
+    if (right == zero)
+        throw DivideByZeroException();
+
+    return left * right.inverce();
 }
 
 Matrix Matrix::subtraction(const Matrix &left, const Matrix &right)
@@ -170,9 +184,7 @@ Matrix Matrix::inverce() const
 
    auto tmp{*this};
 
-   auto amount = static_cast<int>(_rowCount * _rowCount);
-   QVector<double> vect(amount, 1.0);
-   Matrix negative(_rowCount, _rowCount, vect);
+   auto negative = unitMatrix(_rowCount);
 
    tmp.makeTriangle(&negative);
    tmp.reverse();
@@ -194,7 +206,7 @@ ComplexNumber Matrix::determinant() const
     Matrix tmp(*this);
 
     if (_rowCount != _colCount)
-        throw new NotSquareMatrixException();
+        throw NotSquareMatrixException();
 
     try
     {
@@ -254,6 +266,9 @@ Matrix Matrix::pow(unsigned int power) const
 {
     auto result = Matrix(*this);
 
+    if (power == 0)
+        result = unitMatrix(_rowCount);
+
     for (unsigned int i = 1; i < power; i++)
         result *= result;
 
@@ -264,7 +279,7 @@ std::vector<ComplexNumber> Matrix::eigenvaluesEigenvectors() const
 {
     auto result = std::vector<ComplexNumber>();
 
-
+    // TODO: add method
 
     return result;
 }
@@ -281,23 +296,85 @@ Matrix Matrix::hermiteConjugated() const
 
 uint Matrix::rank() const
 {
-    uint result = 0;
+    auto tmp{*this};
+    size_t line = 0, column = 0;
 
-    // TODO: Add rank
+    while(line < tmp._rowCount && column < tmp._colCount) {
 
-    return result;
+        if (tmp._coefficients[line][column] == ComplexNumber::ZERO)
+            for (size_t inner_line = line + 1; inner_line < tmp._rowCount; inner_line++)
+                if (tmp._coefficients[inner_line][column] != ComplexNumber::ZERO)
+                    tmp.swapLines(line, inner_line);
+
+        if (tmp._coefficients[line][column] == ComplexNumber::ZERO) {
+            column++;
+            continue;
+        }
+
+        for (size_t inner_line = line + 1; inner_line < tmp._rowCount; inner_line++)
+        {
+            auto coef = tmp._coefficients[inner_line][column] / tmp._coefficients[line][column];
+            for (size_t inner_col = 0; inner_col < tmp._colCount; inner_col++)
+                tmp._coefficients[inner_line][inner_col] -= (coef * tmp._coefficients[line][inner_col]);
+        }
+
+        line++;
+        column++;
+    }
+
+    uint countEmptyLine = 0;
+    for (size_t line = 0; line < tmp._rowCount; line++) {
+        bool mustIncrement = false;
+
+        for (size_t column = 0; column < tmp._colCount; column++) {
+            if (tmp._coefficients[line][column] != ComplexNumber::ZERO) {
+                mustIncrement = true;
+                break;
+            }
+        }
+
+        if (mustIncrement)
+            countEmptyLine++;
+    }
+
+    return countEmptyLine;
 }
 
 Matrix Matrix::generate()
 {
-    size_t colCount = rand() % 10;
-    size_t rowCount = rand() % 10;
+    size_t colCount = rand() % 4 + 1;
+    size_t rowCount = rand() % 4 + 1;
 
+    return generate(colCount, rowCount);
+}
+
+Matrix Matrix::generate(size_t colCount, size_t rowCount)
+{
     auto coefficents = QVector<double>();
     for(size_t i = 0; i < colCount * rowCount; i++)
-        coefficents.append(rand());
+    {
+        auto number = 20 * static_cast<double>(rand()) / static_cast<double>(RAND_MAX) - 10;
+        coefficents.append(number);
+    }
 
-   return Matrix(colCount, rowCount, coefficents);
+    return Matrix(colCount, rowCount, coefficents);
+}
+
+Matrix Matrix::generateSquareMatrix()
+{
+    size_t count = rand() % 4 + 1;
+
+    return generate(count, count);
+}
+
+Matrix Matrix::unitMatrix(size_t count)
+{
+    auto result = Matrix(count, count);
+
+    for (size_t line = 0; line < count; line++)
+        result._coefficients[line][line] = ComplexNumber::ONE;
+
+    return result;
 }
 
 bool Matrix::equal(const Matrix &matrix) const
@@ -329,7 +406,7 @@ std::string Matrix::toString() const
                    << "]";
         }
         if (i != _rowCount - 1)
-            result << "|";
+            result << "\n";
     }
 
     return result.str();
@@ -337,10 +414,10 @@ std::string Matrix::toString() const
 
 void Matrix::makeTriangle(Matrix* neg)
 {
-    for (size_t line = 0; line < _colCount; line++)
+    for (size_t line = 0; line < _rowCount; line++)
     {
         if (_coefficients[line][line] == ComplexNumber::ZERO)
-            for (size_t inner_line = line + 1; inner_line < _colCount; inner_line++)
+            for (size_t inner_line = line + 1; inner_line < _rowCount; inner_line++)
                 if (_coefficients[inner_line][line] != ComplexNumber::ZERO)
                 {
                     swapLines(line, inner_line);
@@ -356,7 +433,7 @@ void Matrix::makeTriangle(Matrix* neg)
         {
             auto coef = _coefficients[inner_line][line] / _coefficients[line][line];
 
-            for (size_t inner_col = 0; inner_col < _rowCount; inner_col++)
+            for (size_t inner_col = 0; inner_col < _colCount; inner_col++)
             {
                 _coefficients[inner_line][inner_col] -= (coef * _coefficients[line][inner_col]);
 
@@ -378,7 +455,7 @@ void Matrix::swapLines(size_t first, size_t second)
 
 void Matrix::swapColums(size_t first, size_t second)
 {
-    if (first >= _rowCount || second >= _rowCount)
+    if (first >= _colCount || second >= _colCount)
         return;
 
     for (size_t i = 0; i < _rowCount; i++) {

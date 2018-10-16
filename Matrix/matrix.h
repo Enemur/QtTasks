@@ -48,6 +48,9 @@ public:
 
     Matrix& operator=(const Matrix &matrix);
 
+    bool operator== (const Matrix &matrix) const;
+    bool operator!= (const Matrix &matrix) const;
+
     //ArithmeticOperations
     static Matrix multiply(const Matrix &left, const Matrix &right);
     static Matrix multiply(const Matrix &left, double number);
@@ -80,6 +83,10 @@ public:
     uint rank() const;
 
     static Matrix generate();
+    static Matrix generate(size_t colCount, size_t rowCount);
+    static Matrix generateSquareMatrix();
+
+    static Matrix unitMatrix(size_t count);
     
     bool equal(const Matrix &matrix) const;
     std::string toString() const;
