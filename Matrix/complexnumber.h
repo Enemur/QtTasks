@@ -20,6 +20,9 @@ public:
     ComplexNumber(double realPart, double imaginaryPart = 0);
     ComplexNumber(const ComplexNumber &complexNumber);
 
+    double realPart() const;
+    double imaginaryPart() const;
+
     ComplexNumber& operator= (const ComplexNumber& number);
     bool operator== (const ComplexNumber& number) const;
     bool operator!= (const ComplexNumber& number) const;

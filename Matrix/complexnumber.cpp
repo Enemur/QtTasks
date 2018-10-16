@@ -22,6 +22,16 @@ ComplexNumber::ComplexNumber(const ComplexNumber &complexNumber)
     _imaginaryPart = complexNumber._imaginaryPart;
 }
 
+double ComplexNumber::realPart() const
+{
+    return _realPart;
+}
+
+double ComplexNumber::imaginaryPart() const
+{
+    return _imaginaryPart;
+}
+
 ComplexNumber &ComplexNumber::operator=(const ComplexNumber &number)
 {
     if (this != &number)
