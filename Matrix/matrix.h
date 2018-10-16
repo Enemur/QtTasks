@@ -53,7 +53,7 @@ public:
 
     //ArithmeticOperations
     static Matrix multiply(const Matrix &left, const Matrix &right);
-    static Matrix multiply(const Matrix &left, double number);
+    static Matrix multiply(const Matrix &left, const ComplexNumber &number);
 
     static Matrix addition(const Matrix &left, const Matrix &right);
     static Matrix division(const Matrix &left, const Matrix &right);
@@ -62,15 +62,17 @@ public:
     //
 
     Matrix operator*(const Matrix& right) const;
+    Matrix operator*(const ComplexNumber &number) const;
     Matrix operator+(const Matrix& right) const;
     Matrix operator-() const;
     Matrix operator-(const Matrix& right) const;
     Matrix operator/(const Matrix& right) const;
 
     Matrix& operator*=(const Matrix& right);
+    Matrix& operator*=(const ComplexNumber &number);
     Matrix& operator+=(const Matrix& right);
     Matrix& operator-=(const Matrix& right);
-    Matrix &operator/=(const Matrix& right);
+    Matrix& operator/=(const Matrix& right);
 
     Matrix inverce() const;
     ComplexNumber determinant() const;

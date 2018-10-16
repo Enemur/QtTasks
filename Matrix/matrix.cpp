@@ -74,7 +74,7 @@ Matrix Matrix::multiply(const Matrix &left, const Matrix &right)
     return result;
 }
 
-Matrix Matrix::multiply(const Matrix &left, double number)
+Matrix Matrix::multiply(const Matrix &left, const ComplexNumber &number)
 {
     auto result = Matrix(left);
 
@@ -133,6 +133,11 @@ Matrix Matrix::operator*(const Matrix &right) const
     return multiply(*this, right);
 }
 
+Matrix Matrix::operator*(const ComplexNumber &number) const
+{
+    return multiply(*this, number);
+}
+
 Matrix Matrix::operator+(const Matrix &right) const
 {
     return addition(*this, right);
@@ -156,6 +161,12 @@ Matrix Matrix::operator/(const Matrix &right) const
 Matrix &Matrix::operator*=(const Matrix &right)
 {
     *this = multiply(*this, right);
+    return *this;
+}
+
+Matrix &Matrix::operator*=(const ComplexNumber &number)
+{
+    *this = multiply(*this, number);
     return *this;
 }
 
