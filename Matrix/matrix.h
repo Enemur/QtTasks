@@ -23,7 +23,7 @@
 нахождения обратной матрицы, +
 нахождения ранга матрицы,
 нахождения комплексно-сопряжённой матрицы, +
-нахождения эрмитовосопряжённой матрицы,
+нахождения эрмитовосопряжённой матрицы, +
 возведения матрицы в целую неотрицательную степень, +
 нахождения собственных чисел и собственных векторов матрицы.
 Реализовать метод на уровне типа для создания случайной матрицы. +*/
@@ -76,6 +76,8 @@ public:
     Matrix conjugate() const;
     Matrix pow(unsigned int power) const;
     std::vector<ComplexNumber> eigenvaluesEigenvectors() const;
+    Matrix hermiteConjugated() const;
+    uint rank() const;
 
     static Matrix generate();
     

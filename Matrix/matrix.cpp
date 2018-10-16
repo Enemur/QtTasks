@@ -238,7 +238,14 @@ ComplexNumber Matrix::trace() const
 Matrix Matrix::conjugate() const
 {
     auto result = transposed();
-    result = unaryMinus(result);
+
+    for (size_t i = 0; i < _rowCount; i++)
+        for (size_t j = 0; j < _colCount; j++)
+        {
+            auto numberTmp = result._coefficients[i][j];
+            result._coefficients[i][j] = ComplexNumber(numberTmp.realPart(),
+                                                       -numberTmp.imaginaryPart());
+        }
 
     return result;
 }
@@ -258,6 +265,25 @@ std::vector<ComplexNumber> Matrix::eigenvaluesEigenvectors() const
     auto result = std::vector<ComplexNumber>();
 
 
+
+    return result;
+}
+
+Matrix Matrix::hermiteConjugated() const
+{
+    auto result = Matrix(*this);
+
+    result = result.transposed()
+                   .conjugate();
+
+    return result;
+}
+
+uint Matrix::rank() const
+{
+    uint result = 0;
+
+    // TODO: Add rank
 
     return result;
 }
