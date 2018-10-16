@@ -96,7 +96,7 @@ ComplexNumber ComplexNumber::divide(const ComplexNumber &left, const ComplexNumb
     auto result = ComplexNumber();
 
     if (right == ComplexNumber::ZERO)
-        throw new CNDivideByZeroException();
+        throw CNDivideByZeroException();
 
     result._realPart = (left._realPart * right._realPart +
             left._imaginaryPart * right._imaginaryPart) /
