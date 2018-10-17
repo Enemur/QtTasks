@@ -51,7 +51,7 @@ public:
     bool operator== (const Matrix &matrix) const;
     bool operator!= (const Matrix &matrix) const;
 
-    //ArithmeticOperations
+    //shit
     static Matrix multiply(const Matrix &left, const Matrix &right);
     static Matrix multiply(const Matrix &left, const ComplexNumber &number);
 

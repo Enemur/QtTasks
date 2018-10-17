@@ -42,7 +42,8 @@ void showMatrixMethods()
         Matrix matrix1 = Matrix::generate(3, 3),
                matrix2 = Matrix::generate(3, 3),
                matrix3 = Matrix::generate(3, 3),
-               matrix4 = Matrix(2, 2, coef);
+               matrix4 = Matrix(2, 2, coef),
+               matrix5 = Matrix(2, 2);
 
         std::cout << "Matrix4:\n" << matrix4 << std::endl;
         std::cout << "Inverece matrix4:\n" << matrix4.inverce() << std::endl;
@@ -71,5 +72,9 @@ void showMatrixMethods()
     catch(MatrixException ex)
     {
         std::cout << "Exception: " << ex.what() << std::endl;
+    }
+    catch(std::runtime_error error)
+    {
+        std::cout << "Error: " << error.what() << std::endl;
     }
 }

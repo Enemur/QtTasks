@@ -26,7 +26,7 @@ public:
     ComplexNumber& operator= (const ComplexNumber& number);
     bool operator== (const ComplexNumber& number) const;
     bool operator!= (const ComplexNumber& number) const;
-
+    // shit
     static ComplexNumber multiply(const ComplexNumber &left, const ComplexNumber &right);
     static ComplexNumber addition(const ComplexNumber &left, const ComplexNumber &right);
     static ComplexNumber unaryMinus(const ComplexNumber &left);

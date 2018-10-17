@@ -193,7 +193,7 @@ Matrix Matrix::inverce() const
    if (determinant() == ComplexNumber::ZERO)
        throw DeterminantIsZeroException();
 
-   auto tmp{*this};
+   auto tmp = *this;
 
    auto negative = unitMatrix(_rowCount);
 
@@ -223,16 +223,15 @@ ComplexNumber Matrix::determinant() const
     {
         tmp.makeTriangle();
     }
-    catch (...)
+    catch (DeterminantIsZeroException ex)
     {
         return ComplexNumber::ZERO;
     }
 
     auto result = tmp._coefficients[0][0];
 
-    for (size_t i = 1; i < _rowCount; i++) {
+    for (size_t i = 1; i < _rowCount; i++)
         result *= tmp._coefficients[i][i];
-    }
 
     return result;
 }
@@ -288,11 +287,8 @@ Matrix Matrix::pow(unsigned int power) const
 
 std::vector<ComplexNumber> Matrix::eigenvaluesEigenvectors() const
 {
-    auto result = std::vector<ComplexNumber>();
-
     // TODO: add method
-
-    return result;
+    throw new MatrixException("Mrthod not implemented");
 }
 
 Matrix Matrix::hermiteConjugated() const
@@ -310,14 +306,16 @@ uint Matrix::rank() const
     auto tmp{*this};
     size_t line = 0, column = 0;
 
-    while(line < tmp._rowCount && column < tmp._colCount) {
+    while(line < tmp._rowCount && column < tmp._colCount)
+    {
 
         if (tmp._coefficients[line][column] == ComplexNumber::ZERO)
             for (size_t inner_line = line + 1; inner_line < tmp._rowCount; inner_line++)
                 if (tmp._coefficients[inner_line][column] != ComplexNumber::ZERO)
                     tmp.swapLines(line, inner_line);
 
-        if (tmp._coefficients[line][column] == ComplexNumber::ZERO) {
+        if (tmp._coefficients[line][column] == ComplexNumber::ZERO)
+        {
             column++;
             continue;
         }
@@ -333,22 +331,23 @@ uint Matrix::rank() const
         column++;
     }
 
-    uint countEmptyLine = 0;
-    for (size_t line = 0; line < tmp._rowCount; line++) {
-        bool mustIncrement = false;
+    uint countNotEmptyLine = 0;
+    for (size_t line = 0; line < tmp._rowCount; line++)
+    {
+        bool notEmptyLine = false;
 
-        for (size_t column = 0; column < tmp._colCount; column++) {
-            if (tmp._coefficients[line][column] != ComplexNumber::ZERO) {
-                mustIncrement = true;
+        for (size_t column = 0; column < tmp._colCount; column++)
+            if (tmp._coefficients[line][column] != ComplexNumber::ZERO)
+            {
+                notEmptyLine = true;
                 break;
             }
-        }
 
-        if (mustIncrement)
-            countEmptyLine++;
+        if (notEmptyLine)
+            countNotEmptyLine++;
     }
 
-    return countEmptyLine;
+    return countNotEmptyLine;
 }
 
 Matrix Matrix::generate()
@@ -469,13 +468,13 @@ void Matrix::swapColums(size_t first, size_t second)
     if (first >= _colCount || second >= _colCount)
         return;
 
-    for (size_t i = 0; i < _rowCount; i++) {
+    for (size_t i = 0; i < _rowCount; i++)
         std::swap(_coefficients[i][first], _coefficients[i][second]);
-    }
 }
 
 Matrix::~Matrix()
 {
+    //
     _coefficients.clear();
 }
 
