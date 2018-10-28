@@ -2,8 +2,8 @@ from src.PolynomException.ValueTypeException import ValueTypeException
 
 
 class Polynom:
+
     def __init__(self, nodes: dict = {}):
-        # TODO: add my exception
         if not isinstance(nodes, dict):
             raise ValueTypeException(f'node have type {type(nodes)}, but dict was expected ')
 
@@ -71,7 +71,7 @@ class Polynom:
                     else:
                         items[resultPower] = value
         elif isinstance(other, int) or isinstance(other, float):
-            items = self.nodes
+            items = dict(self.nodes)
 
             for power in items:
                 items[power] *= other
@@ -83,6 +83,16 @@ class Polynom:
     def __imul__(self, other):
         result = self * other
         self.nodes = result.nodes
+
+    def differential(self):
+        nodes = {}
+
+        for power in self.nodes:
+            if power != 0:
+                value = self.nodes[power]
+                nodes[power - 1] = power * value
+
+        return Polynom(nodes)
 
     def __str__(self):
         result = ''
