@@ -38,6 +38,8 @@ class Polynom:
         result = self + other
         self.nodes = result.nodes
 
+        return self
+
     def __sub__(self, other):
         if not isinstance(other, Polynom):
             raise ValueTypeException(f'Other have type {type(other)}, but Polynom was expected ')
@@ -57,6 +59,8 @@ class Polynom:
     def __isub__(self, other):
         result = self - other
         self.nodes = result.nodes
+
+        return self
 
     def __mul__(self, other):
         items = {}
@@ -84,6 +88,9 @@ class Polynom:
         result = self * other
         self.nodes = result.nodes
 
+        return self
+
+    @property
     def differential(self):
         nodes = {}
 
