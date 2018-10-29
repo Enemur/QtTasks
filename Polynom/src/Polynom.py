@@ -3,11 +3,14 @@ from src.PolynomException.ValueTypeException import ValueTypeException
 
 class Polynom:
 
-    def __init__(self, nodes: dict = {}):
+    def __init__(self, nodes=None):
+        if nodes is None:
+            nodes = dict()
+
         if not isinstance(nodes, dict):
             raise ValueTypeException(f'node have type {type(nodes)}, but dict was expected')
 
-        self.nodes = nodes
+        self.__nodes = dict(nodes)
         self.__simplify()
 
     def __add__(self, other):
@@ -16,19 +19,19 @@ class Polynom:
 
         items = dict(self.nodes)
 
-        for node in other.nodes:
-            value = other.nodes[node]
+        for power in other.nodes:
+            value = other.nodes[power]
 
-            if node in items:
-                items[node] += value
+            if power in items:
+                items[power] += value
             else:
-                items[node] = value
+                items[power] = value
 
         return Polynom(items)
 
     def __iadd__(self, other):
         result = self + other
-        self.nodes = result.nodes
+        self.__nodes = result.nodes
 
         return self
 
@@ -38,19 +41,19 @@ class Polynom:
 
         items = dict(self.nodes)
 
-        for node in other.nodes:
-            value = other.nodes[node]
+        for power in other.nodes:
+            value = other.nodes[power]
 
-            if node in items:
-                items[node] -= value
+            if power in items:
+                items[power] -= value
             else:
-                items[node] = value
+                items[power] = value
 
         return Polynom(items)
 
     def __isub__(self, other):
         result = self - other
-        self.nodes = result.nodes
+        self.__nodes = result.nodes
 
         return self
 
@@ -64,9 +67,25 @@ class Polynom:
 
     def __imul__(self, other):
         result = self * other
-        self.nodes = result.nodes
+        self.__nodes = result.nodes
 
         return self
+
+    def __pow__(self, power):
+        if power > 0:
+            result = Polynom(self.__nodes)
+            for i in range(1, power):
+                result *= self
+        elif power == 0:
+            result = Polynom({0: 1})
+        else:
+            raise Exception('Only power >= 0')
+
+        return result
+
+    @property
+    def nodes(self):
+        return self.__nodes
 
     @property
     def differential(self):
@@ -85,9 +104,25 @@ class Polynom:
 
         for power in self.nodes:
             value = self.nodes[power]
-            nodes[power + 1] = value / power + 1
+            nodes[power + 1] = value / (power + 1)
 
         return Polynom(nodes)
+
+    @staticmethod
+    def superposition(left, right):
+        result = Polynom()
+
+        if not isinstance(right, Polynom):
+            raise ValueTypeException(f'node have type {type(right)}, but dict was expected')
+
+        if not isinstance(left, Polynom):
+            raise ValueTypeException(f'node have type {type(left)}, but dict was expected')
+
+        for power in left.nodes:
+            value = left.nodes[power]
+            result += pow(right, power) * value
+
+        return result
 
     def __str__(self):
         result = ''
@@ -105,11 +140,24 @@ class Polynom:
             elif value < 0:
                 result += "-"
 
-            if abs(value) != 1:
+            if abs(value) != 1 or power < 1:
                 result += str(abs(value))
 
-            if power != 0:
-                result += f"x^{power}"
+            if power > 0:
+                result += "x"
+                if power > 1:
+                    result += f'^{power}'
+
+        return result
+
+    def __repr__(self):
+        result = ''
+
+        for power in self.nodes:
+            value = self.nodes[power]
+            if result != '' and value >= 0:
+                result += '+'
+            result += f'{value}x^{power}'
 
         return result
 
@@ -146,4 +194,4 @@ class Polynom:
             value = self.nodes[power]
             if value != 0 and power >= 0:
                 result[power] = value
-        self.nodes = result
+        self.__nodes = result
