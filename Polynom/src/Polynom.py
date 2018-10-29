@@ -5,18 +5,10 @@ class Polynom:
 
     def __init__(self, nodes: dict = {}):
         if not isinstance(nodes, dict):
-            raise ValueTypeException(f'node have type {type(nodes)}, but dict was expected ')
+            raise ValueTypeException(f'node have type {type(nodes)}, but dict was expected')
 
         self.nodes = nodes
         self.__simplify()
-
-    def __simplify(self):
-        result = {}
-        for node in self.nodes:
-            value = self.nodes[node]
-            if value != 0:
-                result[node] = value
-        self.nodes = result
 
     def __add__(self, other):
         if not isinstance(other, Polynom):
@@ -63,26 +55,12 @@ class Polynom:
         return self
 
     def __mul__(self, other):
-        items = {}
         if isinstance(other, Polynom):
-            for pow1 in self.nodes:
-                for pow2 in other.nodes:
-                    resultPower = pow1 + pow2
-                    value = self.nodes[pow1] * other.nodes[pow2]
-
-                    if resultPower in items:
-                        items[resultPower] += value
-                    else:
-                        items[resultPower] = value
-        elif isinstance(other, int) or isinstance(other, float):
-            items = dict(self.nodes)
-
-            for power in items:
-                items[power] *= other
+            result = self.__mulOnPolynom(other)
         else:
-            raise ValueTypeException(f'Other have type {type(other)}, but Polynom or valueType was expected ')
+            result = self.__mulOnOtherType(other)
 
-        return Polynom(items)
+        return result
 
     def __imul__(self, other):
         result = self * other
@@ -95,9 +73,19 @@ class Polynom:
         nodes = {}
 
         for power in self.nodes:
-            if power != 0:
+            if power > 0:
                 value = self.nodes[power]
                 nodes[power - 1] = power * value
+
+        return Polynom(nodes)
+
+    @property
+    def integral(self):
+        nodes = {}
+
+        for power in self.nodes:
+            value = self.nodes[power]
+            nodes[power + 1] = value / power + 1
 
         return Polynom(nodes)
 
@@ -124,3 +112,38 @@ class Polynom:
                 result += f"x^{power}"
 
         return result
+
+    def __len__(self):
+        if len(self.nodes) != 0:
+            maxPower = max(self.nodes.keys())
+        else:
+            maxPower = 0
+        return maxPower
+
+    def __mulOnPolynom(self, other):
+        items = {}
+        for pow1 in self.nodes:
+            for pow2 in other.nodes:
+                resultPower = pow1 + pow2
+                value = self.nodes[pow1] * other.nodes[pow2]
+
+                if resultPower in items:
+                    items[resultPower] += value
+                else:
+                    items[resultPower] = value
+        return Polynom(items)
+
+    def __mulOnOtherType(self, other):
+        items = dict(self.nodes)
+
+        for power in items:
+            items[power] *= other
+        return Polynom(items)
+
+    def __simplify(self):
+        result = {}
+        for power in self.nodes:
+            value = self.nodes[power]
+            if value != 0 and power >= 0:
+                result[power] = value
+        self.nodes = result
