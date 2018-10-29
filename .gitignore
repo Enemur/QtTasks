@@ -1,0 +1,6 @@
+*.pro
+build*
+venv
+.idea
+__pycache__
+*.zip
