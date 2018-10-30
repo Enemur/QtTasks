@@ -1,3 +1,5 @@
+from copy import copy
+
 from src.Polynom import Polynom
 from src.PolynomException.PolynomExceptionBase import PolynomExceptionBase
 
@@ -6,6 +8,12 @@ if __name__ == '__main__':
         polynom1 = Polynom({2: 1, 1: 2, 0: -1})
         polynom2 = Polynom({1: 2, 0: 3})
         polynom3 = Polynom({3: 2, 2: 3})
+        polynom4 = Polynom({3: 1, 2: -12, 0: -42})
+        polynom5 = Polynom({1: 1, 0: -3})
+
+        print(polynom4, polynom5)
+        print(polynom4 / polynom5)
+        print(polynom4 % polynom5)
 
         print(f'polynom1: {polynom1}')
         print(f'polynom2: {polynom2}')
