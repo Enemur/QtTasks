@@ -19,15 +19,15 @@ int main(int argc, char *argv[])
 {
     about();
 
-//    if (argc < 2)
-//    {
-//        std::cout << "argc != 2" << std::endl;
-//        return -1;
-//    }
+    if (argc < 2)
+    {
+        std::cout << "argc != 2" << std::endl;
+        return -1;
+    }
 
     try
     {
-        auto pathToFile = "/home/pavel/QtProjects/MaxNumber/in.txt";
+        auto pathToFile = argv[1];
         auto matrix = readMatrixFromFile(pathToFile);
         std::cout << getMaxNumberOfMatrix(matrix) << std::endl;
 
