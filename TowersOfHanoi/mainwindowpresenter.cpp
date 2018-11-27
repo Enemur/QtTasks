@@ -4,7 +4,7 @@
 
 MainWindowPresenter::MainWindowPresenter()
     :_model(new MainWindowModel),
-      _listViewModel(new QStringListModel())
+     _listViewModel(new QStringListModel())
 {
     QObject::connect(_model, &MainWindowModel::logsChanged, this, &MainWindowPresenter::onLogsChanged);
     QObject::connect(_model, &MainWindowModel::logsClear, this, &MainWindowPresenter::onLogsClear);

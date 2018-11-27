@@ -3,10 +3,10 @@
 #include <qfiledialog.h>
 
 MainWindowModel::MainWindowModel()
-    :_timer(new QTimer()),
+    :_model(new HanoiTowersModel()),
+     _timer(new QTimer(this)),
      _logger(new Logger()),
-     _buttonsActions(),
-     _model(new HanoiTowersModel())
+     _buttonsActions()
 {
     isStarted = false;
 
@@ -19,10 +19,12 @@ MainWindowModel::MainWindowModel()
 
     _timer->setInterval(TimerInterval);
     QObject::connect(_timer, &QTimer::timeout, this, &MainWindowModel::nextStep);
+
     QObject::connect(_logger, &Logger::logsChanged, this, &MainWindowModel::onLogsChanged);
     QObject::connect(_logger, &Logger::logsClear, this, &MainWindowModel::onLogsClear);
     QObject::connect(_model, &HanoiTowersModel::towersChanged, this, &MainWindowModel::onTowersChanged);
     QObject::connect(_model, &HanoiTowersModel::movedTowers, this, &MainWindowModel::onMovedTowers);
+    QObject::connect(_model, &HanoiTowersModel::towersFinished, this, &MainWindowModel::stop);
 }
 
 void MainWindowModel::clearLogs()
@@ -33,6 +35,7 @@ void MainWindowModel::clearLogs()
 void MainWindowModel::setN(int n)
 {
     _model->setN(n);
+    _timer->stop();
 }
 
 void MainWindowModel::executeButtonAction(Buttons button)
@@ -43,6 +46,9 @@ void MainWindowModel::executeButtonAction(Buttons button)
 
 void MainWindowModel::start()
 {
+    if (_model->isFinished())
+        return;
+
     if (isStarted)
         return;
 
@@ -65,7 +71,7 @@ void MainWindowModel::stop()
 
 void MainWindowModel::nextStep()
 {
-    if (isStarted)
+    if (_model->isFinished())
         return;
 
     _model->nextStep();
@@ -73,9 +79,6 @@ void MainWindowModel::nextStep()
 
 void MainWindowModel::prevStep()
 {
-    if (isStarted)
-        return;
-
     _model->prevStep();
 }
 
@@ -118,4 +121,5 @@ MainWindowModel::~MainWindowModel()
 {
     delete _timer;
     delete _logger;
+    delete _model;
 }

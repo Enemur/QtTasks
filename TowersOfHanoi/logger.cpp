@@ -2,8 +2,9 @@
 
 void Logger::AppendLog(const QString &message)
 {
-    logs.push_back(message);
-    emit logsChanged(message);
+    auto str = QString::number(logs.size() + 1) + "] " + message;
+    logs.push_back(str);
+    emit logsChanged(str);
 }
 
 Logger::Logger()

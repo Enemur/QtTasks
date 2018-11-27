@@ -29,7 +29,7 @@ public:
 private:
     HanoiTowersModel* _model;
     bool isStarted;
-    const static int TimerInterval = 2000;
+    const static int TimerInterval = 100;
     QTimer* _timer;
 
     Logger* _logger;

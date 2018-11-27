@@ -40,38 +40,48 @@ void MainWindow::buttonClick(Buttons button)
 
 void MainWindow::onTowersChanged(const QVector<QVector<int> > &towers)
 {
-    QPixmap pixmap(ui->label->width(), ui->label->height());
+    int minWidth = 20;
+    int minHeight = 20;
+
+    int n = 0;
+    for(auto kernel: towers)
+        n += kernel.size();
+
+    int widthField = 4 * minWidth + n * minWidth * 3;
+    int heightField = minHeight * n;
+
+    if (ui->label->height() > heightField)
+        heightField = ui->label->height();
+
+    if (ui->label->width() > widthField)
+        widthField = ui->label->width();
+
+    ui->label->setMinimumSize(widthField, heightField);
+
+    QPixmap pixmap(widthField, heightField);
     QPainter painter(&pixmap);
 
     painter.setBrush(QBrush(Qt::white));
-    painter.drawRect(0,0, ui->label->width(), ui->label->height());
+    painter.drawRect(0,0, widthField, heightField);
     painter.setBrush(QBrush(Qt::red));
-
-    int height = 20;
-    int _x = 0;
-    int minWidth = 20;
+    int _x = minWidth;
 
     for (auto kernel : towers)
     {
-        int y = ui->label->height();
+        int y = heightField - minHeight;
         int x = _x;
 
         for(int i = 0; i < kernel.size(); i++)
         {
             int width = minWidth * (kernel[i] + 1);
-            painter.drawRect(x, y, width, height);
-            y -= height;
-            width -= minWidth;
+            painter.drawRect(x, y, width, minHeight);
+            y -= minHeight;
 
-            if (i < kernel.size() - 1)
-                x += width - minWidth * (kernel[i] + 2) / 2;
+            if (kernel[i] != kernel.back())
+                x += (width - minWidth * (kernel[i + 1] + 1)) / 2;
         }
 
-        int tmp = 0;
-        if (kernel.size() != 0)
-            tmp += (kernel[0] + 1) * minWidth;
-
-        _x = 50 + tmp;
+        _x += minHeight + n * minWidth;
     }
 
     painter.end();
@@ -94,14 +104,17 @@ void MainWindow::newScene()
     auto *slider = new QSlider(Qt::Orientation::Horizontal, &dlg);
     slider->setTickInterval(5);
     slider->setSingleStep(1);
+    slider->setMinimum(2);
+    slider->setMaximum(30);
     slider->setTickPosition(QSlider::TicksBothSides);
 
     auto *label = new QLabel(&dlg);
 
+    label->setText(QString::number(slider->value()));
     QObject::connect(slider,
                      &QSlider::valueChanged,
                      this,
-                     [=](){label->setText(std::to_string(slider->value()).c_str());});
+                     [=](){label->setText(QString::number(slider->value()));});
 
     auto *btnBox = new QDialogButtonBox(&dlg);
     btnBox->setStandardButtons(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
@@ -119,6 +132,7 @@ void MainWindow::newScene()
     {
         auto result = slider->value();
         presenter->setN(result);
+        ui->nLabel->setText(QString::number(result));
     }
 }
 
