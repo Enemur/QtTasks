@@ -1,4 +1,3 @@
-*.pro
 build*
 venv
 .idea
