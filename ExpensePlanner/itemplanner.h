@@ -4,8 +4,6 @@
 #include <QObject>
 #include <QDateTime>
 
-
-
 class ItemPlanner : public QObject
 {
     Q_OBJECT
@@ -21,6 +19,20 @@ public:
 
     ItemPlanner& operator=(const ItemPlanner& item);
     bool operator==(const ItemPlanner& item) const;
+
+    template<typename Stream>
+    friend Stream& operator>>(Stream& stream, ItemPlanner &planer)
+    {
+        stream >> planer._time >> planer._summ >> planer._label;
+        return stream;
+    }
+
+    template<typename Stream>
+    friend Stream& operator<<(Stream& stream, const ItemPlanner &planer)
+    {
+        stream << planer._time << planer._summ << planer._label;
+        return stream;
+    }
 
     double getSumm() const;
     QDateTime getDate() const;

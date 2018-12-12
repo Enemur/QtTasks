@@ -14,6 +14,7 @@ void AppPresenter::setConnections()
 {
     QObject::connect(_model, &AppModel::remainderChanged, this, &AppPresenter::onRemainderChanged);
     QObject::connect(_model, &AppModel::itemsChanged, this, &AppPresenter::onItemsChanged);
+    QObject::connect(_model, &AppModel::budgetChanged, this, &AppPresenter::onBudgetChanged);
 }
 
 void AppPresenter::createDialog()
@@ -114,6 +115,18 @@ void AppPresenter::updateBudget()
         _model->setBuget(budget);
 }
 
+void AppPresenter::save()
+{
+    auto filePath = QFileDialog::getSaveFileName();
+    _model->save(filePath);
+}
+
+void AppPresenter::open()
+{
+    auto filePath = QFileDialog::getOpenFileName();
+    _model->open(filePath);
+}
+
 void AppPresenter::onRemainderChanged(double remainder)
 {
     QPalette palette;
@@ -133,6 +146,11 @@ void AppPresenter::onItemsChanged(const QVector<ItemPlanner> &items)
 
     for (auto &item : items)
         _list->addItem("Date: " + item.getDate().toString() + ", label" + item.getLabel() + ", summ: " +QString::number(item.getSumm()));
+}
+
+void AppPresenter::onBudgetChanged(double budget)
+{
+    _budgetEdit->setText(QString::number(budget));
 }
 
 AppPresenter::~AppPresenter()

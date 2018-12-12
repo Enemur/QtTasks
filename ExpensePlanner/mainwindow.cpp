@@ -25,6 +25,9 @@ void MainWindow::setConnections()
 
     QObject::connect(ui->actionAbout, &QAction::triggered, this, &MainWindow::about);
     QObject::connect(ui->actionExit, &QAction::triggered, this, &QApplication::quit);
+
+    QObject::connect(ui->actionOpen, &QAction::triggered, _presenter, &AppPresenter::open);
+    QObject::connect(ui->actionSave, &QAction::triggered, _presenter, &AppPresenter::save);
 }
 
 void MainWindow::budgetChanged()

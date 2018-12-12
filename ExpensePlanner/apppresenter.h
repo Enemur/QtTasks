@@ -10,6 +10,7 @@
 #include <QFormLayout>
 #include <QListWidget>
 #include "ui_dialog.h"
+#include <QFileDialog>
 
 class AppPresenter : public QObject
 {
@@ -40,11 +41,14 @@ public:
 
     void addRate();
     void updateBudget();
+    void save();
+    void open();
 
     ~AppPresenter();
 private slots:
     void onRemainderChanged(double remainder);
     void onItemsChanged(const QVector<ItemPlanner>& items);
+    void onBudgetChanged(double budget);
 };
 
 #endif // APPPRESENTER_H
