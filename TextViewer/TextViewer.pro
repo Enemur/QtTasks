@@ -45,4 +45,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 DISTFILES += \
-    readme
+    readme \
+    utf8.txt \
+    cp1251.txt

@@ -17,23 +17,23 @@ Presenter::Presenter(UiElements uiElements)
 
 void Presenter::setConnections()
 {
-    QObject::connect(_model, &AppModel::fileTextChanged, this, &Presenter::onFileTextChanched);
+    connect(_model, &AppModel::fileTextChanged, this, &Presenter::onFileTextChanched);
 }
 
 void Presenter::initDirView()
 {
     _dirModel.setFilter(QDir::Dirs | QDir::Drives | QDir::NoDotAndDotDot | QDir::AllDirs);
-    _dirModel.setRootPath("/home/pavel");
+    _dirModel.setRootPath("");
     _uiElements.dirView->setModel(&_dirModel);
-    _uiElements.dirView->setRootIndex(_dirModel.index("/home/pavel"));
+    _uiElements.dirView->setRootIndex(_dirModel.index(""));
 }
 
 void Presenter::initFileView()
 {
     _fileModel.setFilter(QDir::Files);
-    _fileModel.setRootPath("/home/pavel");
+    _fileModel.setRootPath("");
     _uiElements.filesView->setModel(&_fileModel);
-    _uiElements.filesView->setRootIndex(_fileModel.index("/home/pavel"));
+    _uiElements.filesView->setRootIndex(_fileModel.index(""));
 }
 
 void Presenter::initColors()
@@ -114,7 +114,9 @@ void Presenter::reset()
     {
         _uiElements.rbCp->setChecked(true);
         _model->setCodec(_uiElements.rbCp->text());
-        _model->readFile();
+
+        if (_model->getFilePath() != "")
+            _model->readFile();
 
         _uiElements.colors->setCurrentIndex(0);
 
@@ -189,7 +191,7 @@ void Presenter::onSetUnderline(int state)
 
 void Presenter::onSetColor(int colorIndex)
 {
-    QPalette p = _uiElements.textView->palette();
+    auto p = _uiElements.textView->palette();
     auto color = _model->getColor(colorIndex);
 
     p.setColor(QPalette::Active, QPalette::Text, color);
@@ -201,7 +203,7 @@ void Presenter::onOpenDirectoryClick()
 {
     auto path = QFileDialog::getExistingDirectory(_uiElements.window,
                                                   tr("Open directory"),
-                                                  "/home",
+                                                  "",
                                                   QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
     openDirectory(path);
 }

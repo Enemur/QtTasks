@@ -16,6 +16,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 private:
     Ui::MainWindow *ui;
+
     Presenter* _presenter;
 private:
     void setConnections();

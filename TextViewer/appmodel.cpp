@@ -10,13 +10,13 @@ void AppModel::readFile() const
     QTextStream stream(&file);
     stream.setCodec(_codec.toStdString().c_str());
 
-     const quint64 maxlen = 16;
-     QString str;
+    const quint64 maxlen = 16;
+    QString str;
 
-     while(!stream.atEnd())
+    while(!stream.atEnd())
          str.append(stream.read(maxlen));
 
-     emit fileTextChanged(str);
+    emit fileTextChanged(str);
 }
 
 void AppModel::writeFile(const QString &filePath, QString fileText) const
@@ -35,11 +35,11 @@ void AppModel::writeFile(const QString &filePath, QString fileText) const
     while(!in.atEnd()) {
         out << in.read(maxlen);
 
-        if (in.status() != QTextStream::Ok)
-            throw std::runtime_error("Error reading text");
+    if (in.status() != QTextStream::Ok)
+        throw std::runtime_error("Error reading text");
 
-        if (out.status() != QTextStream::Ok)
-            throw std::runtime_error("Error writing file");
+    if (out.status() != QTextStream::Ok)
+        throw std::runtime_error("Error writing file");
     }
 }
 
